@@ -1,3 +1,11 @@
+# This could is created produce the following
+# 1. Total number of votes cast
+# 2. A complete list of candidates who received votes
+# 3. Total number of votes each candidate received
+# 4. Percentage of votes each candidate won
+# 5. The winner of the election based on popular vote
+# The below comments relate to the 1 - 5 products that are produced.
+
 #Open the data file.
 # Add our dependencies.
 import csv
@@ -10,17 +18,17 @@ file_to_load = os.path.join("Resources", "election_results.csv")
 file_to_save = os.path.join("analysis", "election_analysis.txt")
 
 #1. The total number of votes cast
-#1a. Initialize a total vote counter.
+#1. Initialize a total vote counter.
 total_votes = 0
 
 #2. A complete list of all the candidates.
 candidate_options = []
 
-#3a1 Create a dictonary to hold the candidate options and thier count of votes.
+#3. Create a dictonary to hold the candidate options and thier count of votes.
 candidate_votes = {}
 
-#4A1 Determine winning candidate along with winning count and percentage
-#4a2 initiate variables for winning candidate, winning count and winning percentage
+#4. Determine winning candidate along with winning count and percentage
+#4. initiate variables for winning candidate, winning count and winning percentage
 winning_candidate = ""
 winning_count = 0
 winning_percentage = 0
@@ -34,78 +42,70 @@ with open(file_to_load) as election_data:
     
     #Print each row inthe CSV file.
     for row in file_reader:
-        #1b. Add to the total vote count.
+        #1. Add to the total vote count.
         total_votes += 1
         
-        #2a Print the candidate name from each row
+        #2, Print the candidate name from each row
         candidate_name = row[2]
 
-        #2b If the candidate does not match any existing candidate.
+        #2. If the candidate does not match any existing candidate.
         if candidate_name not in candidate_options:
-            #2c Add it to the list of candidates
+            #2. Add it to the list of candidates
             candidate_options.append(candidate_name)
 
-            #3a2. Begin tacking the candidate's vote count.
+            #3. Begin tacking the candidate's vote count.
             candidate_votes[candidate_name] = 0
 
-        #3a3 Add a vote to the candidate's count.
+        #3. Add a vote to the candidate's count.
         candidate_votes[candidate_name] += 1
 
-    #3b1 Determine the percentage of votes for each candidate by looping through
-    #3b2 Iterate through the candidate list.
+#ASave the results to our text file.
+with open(file_to_save, "w") as txt_file:
+    #Print the final vote count to the terminal.
+    election_results = (
+        f"\nElection Results\n"
+        f"-------------------------\n"
+        f"Total Votes: {total_votes:,}\n"
+        f"-------------------------\n")
+    print(election_results, end="")
+    # Save the final vote count to the text file.
+    txt_file.write(election_results)
+
+    #4. Determine the percentage of votes for each candidate by looping through
+    #4. Iterate through the candidate list.
     for candidate_name in candidate_votes:
-        #3b3 Retrieve vote count of candidate.
+        #4. Retrieve vote count of candidate.
         votes = candidate_votes[candidate_name]
-           
-        #3b4 Calcualte the percentage of votes.
+            
+        #4. Calcualte the percentage of votes.
         vote_percentage = float(votes) / float(total_votes) * 100
         
-        #3b5 Print the candidaate name and percentage of votes.
-       # print(f"{candidate_name}: received {vote_percentage:.1f}% of the vote")
+        #4. Print the candidaate name and percentage of votes.
+        # print(f"{candidate_name}: received {vote_percentage:.1f}% of the vote")
 
-        #4a3 Determine winning vote count and candidate
-            #4a4 Determine if the votes are greater that the winning count.
+        #5. Determine winning vote count and candidate
+        #5. Determine if the votes are greater that the winning count.
         if (votes > winning_count) and (vote_percentage > winning_percentage):
-        #4a5 if ture then set winning_count = votes and wining_percent = vote_percentage.
+            #5 if ture then set winning_count = votes and wining_percent = vote_percentage.
             winning_count = votes
             winning_percentage = vote_percentage
-        
-            #4a6 Set the winning_candidate equal to the candidate's name.
             winning_candidate = candidate_name
 
-        # To do: print out the winning candidate, vote count and percentage to
-        #terminal
-        print(f" {candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
-
+        # Print each candidate, their voter count, and the percentage to the terminal.
+        candidate_results = (f" {candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+        print(candidate_results)
+        # Save the candidate results to our text file.
+        txt_file.write(candidate_results)
+        
+    
     winning_candidate_summary = (
         f"-------------------------\n"
         f"Winner: {winning_candidate}\n"
         f"Winning Vote Count: {winning_count:,}\n"
         f"Winning Percentage: {winning_percentage:.1f}%\n"
         f"-------------------------\n")
+    #5. Print(winning_candidate_summary)
     print(winning_candidate_summary)
-    
-#1c. Print the total votes.
-#print(total_votes)
-
-#2c Print the candidate list
-#print(candidate_options)
-
-#3a4 Print the candidate vote dictionary.
-#print(candidate_votes)
-
-#3b1 The percentage of votes each candidate won
-#vote_percentage = ()
-
-
-
-
-
-#print(f" {winning_candidate} won with a {winning_count} count of votes and a winning percentage of {winning_percentage:.1f}%")
-
-
-
-
-
-
-#5. The winner of the election based on popular vote
+         
+    #5. Save the winning candidate's name to the text file.
+    txt_file.write(winning_candidate_summary)
